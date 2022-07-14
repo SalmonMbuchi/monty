@@ -7,6 +7,8 @@ int is_empty_line(char *line, char *delims);
 void (*get_op_func(char *opcode))(stack_t**, unsigned int);
 int run_monty(FILE *script_fd);
 
+
+char **op_toks = NULL;
 /**
  * free_tokens - Frees the global op_toks array of strings.
  */
@@ -115,11 +117,12 @@ int run_monty(FILE *script_fd)
 	size_t len = 0, exit_status = EXIT_SUCCESS;
 	unsigned int line_number = 0, prev_tok_len = 0;
 	void (*op_func)(stack_t**, unsigned int);
+	ssize_t err_val = getline(&line, &len, script_fd);
 
 	if (init_stack(&stack) == EXIT_FAILURE)
 		return (EXIT_FAILURE);
 
-	while (getline(&line, &len, script_fd) != -1)
+	while (err_val != -1)
 	{
 		line_number++;
 		op_toks = strtow(line, DELIMS);
